@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\TicketController;
+use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\AttendeeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,4 +32,16 @@ Route::group(['middleware' => 'api'], function () {
 Route::group(['middleware' => 'api'], function () {
     Route::post('/events/{id}/tickets', [TicketController::class, 'store']);
     Route::get('/events/{id}/tickets', [TicketController::class, 'index']);
+});
+
+// Resource 4: Transactions (Dilindungi Auth & Log Activity)
+Route::group(['middleware' => ['api', 'activity.log']], function () {
+    Route::post('/transactions', [TransactionController::class, 'store']);
+    Route::get('/transactions/{code}', [TransactionController::class, 'show']);
+    Route::post('/transactions/{id}/attendees', [AttendeeController::class, 'store']);
+});
+
+// Resource 5: Attendees List (Admin View)
+Route::group(['middleware' => 'api'], function () {
+    Route::get('/events/{id}/attendees', [AttendeeController::class, 'getByEvent']);
 });
