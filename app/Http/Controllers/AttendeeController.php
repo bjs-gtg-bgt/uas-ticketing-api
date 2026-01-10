@@ -9,17 +9,19 @@ use Illuminate\Support\Facades\Validator;
 
 class AttendeeController extends Controller
 {
-    public function __construct() {
-        $this->middleware('auth:api');
-    }
+    // HAPUS CONSTRUCTOR LAMA
+    // public function __construct() {
+    //     $this->middleware('auth:api');
+    // }
 
     // POST /transactions/{id}/attendees
+    // Menambahkan nama peserta ke transaksi yang sudah dibayar
     public function store(Request $request, $id)
     {
         $transaction = Transaction::find($id);
         if (!$transaction) return response()->json(['message' => 'Transaction not found'], 404);
 
-        // Validasi jumlah peserta tidak boleh melebihi tiket yang dibeli
+        // Validasi: Apakah slot tiket di transaksi ini sudah terisi semua namanya?
         $currentAttendees = $transaction->attendees()->count();
         if ($currentAttendees >= $transaction->quantity) {
             return response()->json(['message' => 'All tickets have been assigned to attendees'], 400);
@@ -41,10 +43,11 @@ class AttendeeController extends Controller
         return response()->json(['message' => 'Attendee added', 'data' => $attendee], 201);
     }
 
-    // GET /events/{id}/attendees (Rekap kehadiran per event)
+    // GET /events/{id}/attendees
+    // Melihat daftar hadir per Event (Admin only)
     public function getByEvent($eventId)
     {
-        // Ambil semua transaksi di event tersebut, lalu ambil attendees-nya
+        // Ambil data peserta yang tiketnya terhubung ke event ID tersebut
         $attendees = Attendee::whereHas('transaction.ticket', function($q) use ($eventId) {
             $q->where('event_id', $eventId);
         })->get();

@@ -9,9 +9,10 @@ use Illuminate\Support\Facades\Validator;
 
 class TicketController extends Controller
 {
-    public function __construct() {
-        $this->middleware('auth:api');
-    }
+    // HAPUS CONSTRUCTOR LAMA
+    // public function __construct() {
+    //     $this->middleware('auth:api');
+    // }
 
     // POST /events/{id}/tickets
     public function store(Request $request, $id)

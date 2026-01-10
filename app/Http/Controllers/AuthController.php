@@ -10,10 +10,7 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth:api', ['except' => ['login', 'register']]);
-    }
+    // Middleware sudah dipindah ke routes/api.php, jadi constructor kosong/dihapus aman.
 
     public function register(Request $request)
     {
@@ -50,7 +47,8 @@ class AuthController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        if (!$token = auth()->attempt($validator->validated())) {
+        // PERBAIKAN: Gunakan auth('api') secara eksplisit
+        if (!$token = auth('api')->attempt($validator->validated())) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
@@ -59,23 +57,25 @@ class AuthController extends Controller
 
     public function profile()
     {
-        return response()->json(auth()->user());
+        // PERBAIKAN: Gunakan auth('api')
+        return response()->json(auth('api')->user());
     }
 
     public function logout()
     {
-        auth()->logout();
+        // PERBAIKAN: Gunakan auth('api')
+        auth('api')->logout();
         return response()->json(['message' => 'User successfully signed out']);
     }
 
     protected function createNewToken($token)
     {
+        // PERBAIKAN: Gunakan auth('api') untuk akses factory() JWT
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60,
-            'user' => auth()->user()
+            'expires_in' => auth('api')->factory()->getTTL() * 60,
+            'user' => auth('api')->user()
         ]);
     }
 }
-

@@ -40,6 +40,11 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        'api' => [
+            'driver' => 'jwt',      // <--- GANTI DARI 'token' MENJADI 'jwt'
+            'provider' => 'users',
+        ],
     ],
 
     /*

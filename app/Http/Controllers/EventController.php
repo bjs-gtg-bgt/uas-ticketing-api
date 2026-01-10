@@ -8,10 +8,7 @@ use Illuminate\Support\Facades\Validator;
 
 class EventController extends Controller
 {
-    // Hanya user login yang bisa akses (kecuali lihat event jika diperlukan)
-    public function __construct() {
-        $this->middleware('auth:api');
-    }
+    // --- CONSTRUCTOR DIHAPUS (Middleware sudah dihandle di routes/api.php) ---
 
     public function index()
     {
